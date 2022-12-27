@@ -3,6 +3,7 @@ import { prisma } from "../../../helpers/db"
 import {
    validatePassword,
    validateEmail,
+   validateEmailNotExists,
    validateName,
    hash,
 } from "../../../helpers/auth"
@@ -27,7 +28,11 @@ export default async function handler(
    const account: RegisterBody = req.body
 
    const passwordError = validatePassword(account.password)
-   const emailError = await validateEmail(account.email)
+   // Check criteria for emails
+   const emailFormatError = validateEmail(account.email)
+   const emailNotExistsError = await validateEmailNotExists(account.email)
+   const emailError = [...emailFormatError, ...emailNotExistsError]
+
    const nameError = validateName(account.name)
 
    // Validate account details
@@ -69,7 +74,8 @@ export default async function handler(
    }
 
    // Save JWT token for email verification
-   const token = generateToken(account.email)
+   const SEVEN_DAYS_IN_SECONDS = 604800
+   const token = generateToken(account.email, SEVEN_DAYS_IN_SECONDS)
    try {
       await prisma.emailVerification.create({
          data: {

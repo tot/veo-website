@@ -6,7 +6,7 @@ import { prisma } from "../db"
  * @param email Email to check
  * @returns Array of errors. Array is empty if there are no errors.
  */
-export default async function validateEmail(email: string) {
+export function validateEmail(email: string) {
    let errors: string[] = []
    if (
       !email ||
@@ -14,15 +14,45 @@ export default async function validateEmail(email: string) {
    ) {
       errors.push("Email is invalid.")
    }
-
-   // Check database if email is used
-   let existingUser = await prisma.user.findUnique({
-      where: {
-         email: email,
-      },
-   })
-   if (existingUser) {
-      errors.push("An account with that email exists.")
-   }
    return errors
 }
+
+/**
+ * Check if account email does not exist in the database
+ * @param email Email to check
+ * @returns Array of errors. Array is empty if there are no errors.
+ */
+export async function validateEmailNotExists(email: string) {
+    let errors: string[] = []
+ 
+    // Check database if email is used
+    let existingUser = await prisma.user.findUnique({
+       where: {
+          email: email,
+       },
+    })
+    if (existingUser) {
+       errors.push("An account with that email exists.")
+    }
+    return errors
+ }
+
+ /**
+ * Check if account email exists in the database
+ * @param email Email to check
+ * @returns Array of errors. Array is empty if there are no errors.
+ */
+ export async function validateEmailExists(email: string) {
+    let errors: string[] = []
+ 
+    // Check database if email is used
+    let existingUser = await prisma.user.findUnique({
+       where: {
+          email: email,
+       },
+    })
+    if (!existingUser) {
+       errors.push("An account with that email does not exist.")
+    }
+    return errors
+ }

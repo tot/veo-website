@@ -8,3 +8,7 @@ export interface LoginBody {
    email: string
    password: string
 }
+
+export interface ResetRequestBody {
+    email: string
+}

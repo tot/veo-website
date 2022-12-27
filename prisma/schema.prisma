@@ -61,3 +61,8 @@ model EmailVerification {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   token String @unique
 }
+
+model ResetPasswordVerification {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  token String @unique
+}

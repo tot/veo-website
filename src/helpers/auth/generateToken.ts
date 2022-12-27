@@ -5,14 +5,13 @@ import jwt from "jsonwebtoken"
  * @param email Email of the user
  * @returns JSON Web Token of user for email verification
  */
-const SEVEN_DAYS_IN_SECONDS = 604800
-export default function generateToken(email: string) {
+export default function generateToken(email: string, expiresIn: number) {
    const data = {
       // time: Date(),
       email: email,
    }
    const token = jwt.sign(data, process.env.NEXTAUTH_SECRET, {
-      expiresIn: SEVEN_DAYS_IN_SECONDS,
+      expiresIn,
    })
 
    return token
